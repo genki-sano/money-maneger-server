@@ -1,0 +1,14 @@
+version: "3.5"
+
+services:
+  app:
+    build:
+      context: ..
+      target: builder
+    volumes:
+      - ../:/app
+    command: air
+    env_file:
+      - ../.env
+    ports:
+      - 8080:8080
