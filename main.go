@@ -6,10 +6,15 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	"golang.org/x/oauth2/jwt"
 	"google.golang.org/api/sheets/v4"
 )
 
-type itemResponse struct {
+// Payment 支払い内容
+type Payment struct {
+	ID       interface{}
 	Name     interface{}
 	Date     interface{}
 	Price    interface{}
@@ -17,16 +22,15 @@ type itemResponse struct {
 	Memo     interface{}
 }
 
-func getValues(r *sheets.ValueRange) []itemResponse {
-	ret := make([]itemResponse, 0)
+func makeValues(r *sheets.ValueRange) []Payment {
+	ret := make([]Payment, 0)
 	if r == nil {
 		return ret
 	}
-	for i, items := range r.Values {
-		if i == 0 {
-			continue
-		}
-		ret = append(ret, itemResponse{
+
+	for _, items := range r.Values {
+		ret = append(ret, Payment{
+			ID:       items[0],
 			Name:     items[1],
 			Date:     items[2],
 			Price:    items[3],
@@ -37,10 +41,26 @@ func getValues(r *sheets.ValueRange) []itemResponse {
 	return ret
 }
 
+func getClient(email string, key string) *http.Client {
+	conf := &jwt.Config{
+		Email:      email,
+		PrivateKey: []byte(key),
+		TokenURL:   google.JWTTokenURL,
+		Scopes: []string{
+			"https://www.googleapis.com/auth/spreadsheets.readonly",
+		},
+	}
+
+	return conf.Client(oauth2.NoContext)
+}
+
 func getList() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ctx := context.Background()
-		sheetsService, err := sheets.NewService(ctx)
+		email := os.Getenv("GOOGLE_SERVICE_ACCOUNT_EMAIL")
+		privateKey := os.Getenv("GOOGLE_SERVICE_ACCOUNT_PLIVATE_KEY")
+
+		client := getClient(email, privateKey)
+		Service, err := sheets.New(client)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": err.Error(),
@@ -48,10 +68,12 @@ func getList() gin.HandlerFunc {
 			return
 		}
 
-		valueRange, err := sheetsService.Spreadsheets.Values.Get(
-			os.Getenv("GOOGLE_SPREDSHEET_ID"),
-			os.Getenv("GOOGLE_SPREDSHEET_RANGE"),
-		).Do()
+		spreadsheetID := os.Getenv("GOOGLE_SPREDSHEET_ID")
+		valueRange := os.Getenv("GOOGLE_SPREDSHEET_RANGE")
+
+		ctx := context.Background()
+
+		resp, err := Service.Spreadsheets.Values.Get(spreadsheetID, valueRange).Context(ctx).Do()
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": err.Error(),
@@ -60,7 +82,7 @@ func getList() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"values": getValues(valueRange),
+			"values": makeValues(resp),
 		})
 	}
 }
