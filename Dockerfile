@@ -13,11 +13,7 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 
-ENV API_REVISION=release
-ENV CGO_ENABLED=0
-ENV GOOS=linux
-ENV GOARCH=amd64
-RUN go build -o /main
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /main
 
 FROM alpine:3.9
 

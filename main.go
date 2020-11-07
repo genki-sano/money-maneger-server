@@ -14,12 +14,12 @@ import (
 
 // Payment 支払い内容
 type Payment struct {
-	ID       interface{}
-	Name     interface{}
-	Date     interface{}
-	Price    interface{}
-	Category interface{}
-	Memo     interface{}
+	ID       string
+	Name     string
+	Date     string
+	Price    string
+	Category string
+	Memo     string
 }
 
 func makeValues(r *sheets.ValueRange) []Payment {
@@ -30,12 +30,12 @@ func makeValues(r *sheets.ValueRange) []Payment {
 
 	for _, items := range r.Values {
 		ret = append(ret, Payment{
-			ID:       items[0],
-			Name:     items[1],
-			Date:     items[2],
-			Price:    items[3],
-			Category: items[4],
-			Memo:     items[5],
+			ID:       items[0].(string),
+			Name:     items[1].(string),
+			Date:     items[2].(string),
+			Price:    items[3].(string),
+			Category: items[4].(string),
+			Memo:     items[5].(string),
 		})
 	}
 	return ret
@@ -62,9 +62,7 @@ func getList() gin.HandlerFunc {
 		client := getClient(email, privateKey)
 		Service, err := sheets.New(client)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"message": err.Error(),
-			})
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"errors": []string{err.Error()}})
 			return
 		}
 
@@ -75,25 +73,41 @@ func getList() gin.HandlerFunc {
 
 		resp, err := Service.Spreadsheets.Values.Get(spreadsheetID, valueRange).Context(ctx).Do()
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"message": err.Error(),
-			})
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"errors": []string{err.Error()}})
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"values": makeValues(resp),
-		})
+		c.JSON(http.StatusOK, gin.H{"body": makeValues(resp)})
 	}
 }
 
 func router() *gin.Engine {
-	r := gin.Default()
+	e := createEngine()
 
-	api := r.Group("/api")
-	api.GET("/list", getList())
+	api := e.Group("/api")
+	{
+		api.GET("/payments", getList())
+	}
 
-	return r
+	e.NoRoute(
+		func(ctx *gin.Context) {
+			ctx.JSON(http.StatusNotFound, gin.H{"errors": []string{"指定したURLが存在しません。"}})
+		},
+	)
+
+	return e
+}
+
+func createEngine() *gin.Engine {
+	gin.DisableConsoleColor()
+
+	mode := os.Getenv("APP_MODE")
+	if mode == "" {
+		mode = gin.ReleaseMode
+	}
+	gin.SetMode(mode)
+
+	return gin.Default()
 }
 
 func main() {

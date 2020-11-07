@@ -5,10 +5,10 @@ services:
     build:
       context: ..
       target: builder
-    volumes:
-      - ../:/app
-    command: air
-    env_file:
-      - ../.env
     ports:
       - 8080:8080
+    volumes:
+      - ../:/app
+    env_file:
+      - ../.env
+    command: air

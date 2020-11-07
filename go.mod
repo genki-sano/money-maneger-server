@@ -1,4 +1,4 @@
-module github.com/genki-sano/usakichi
+module github.com/genki-sano/money-maneger-server
 
 go 1.15
 
