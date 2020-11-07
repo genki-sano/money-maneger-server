@@ -50,7 +50,6 @@ func getClient(email string, key string) *http.Client {
 			"https://www.googleapis.com/auth/spreadsheets.readonly",
 		},
 	}
-
 	return conf.Client(oauth2.NoContext)
 }
 

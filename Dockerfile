@@ -13,11 +13,11 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /main
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ./build/main ./package
 
 FROM alpine:3.9
 
-COPY --from=builder /main .
+COPY --from=builder ./build/main .
 
 ENV PORT=${PORT}
 ENTRYPOINT ["/main web"]
