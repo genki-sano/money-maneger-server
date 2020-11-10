@@ -5,27 +5,27 @@ import (
 	"github.com/genki-sano/money-maneger-server/package/domains"
 )
 
-// PaymentUseCase ユースケース
+// PaymentUseCase 支払情報ユースケース
 type PaymentUseCase interface {
 	Payments() (domains.Payments, error)
 }
 
-// PaymentInteractor 支払情報のユースケース
+// PaymentInteractor 支払情報ユースケース（構造体）
 type PaymentInteractor struct {
-	PaymentRepos repositories.PaymentRepository
+	paymentRepos repositories.PaymentRepository
 }
 
-// NewPaymentUsecase ユースケース
+// NewPaymentUsecase ユースケースを生成
 func NewPaymentUsecase(
 	paymentRepos repositories.PaymentRepository,
 ) PaymentUseCase {
 	return &PaymentInteractor{
-		PaymentRepos: paymentRepos,
+		paymentRepos: paymentRepos,
 	}
 }
 
 // Payments 支払情報を全件取得
 func (interactor *PaymentInteractor) Payments() (payments domains.Payments, err error) {
-	payments, err = interactor.PaymentRepos.FindAll()
+	payments, err = interactor.paymentRepos.FindAll()
 	return
 }

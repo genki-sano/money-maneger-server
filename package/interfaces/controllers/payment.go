@@ -7,7 +7,7 @@ import (
 	"github.com/genki-sano/money-maneger-server/package/interfaces/handlers"
 )
 
-// PaymentController 支払情報のコントローラー
+// PaymentController 支払情報コントローラー（構造体）
 type PaymentController struct {
 	u usecases.PaymentUseCase
 }

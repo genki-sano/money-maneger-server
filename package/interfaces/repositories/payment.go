@@ -3,7 +3,7 @@ package repositories
 import (
 	"os"
 
-	app "github.com/genki-sano/money-maneger-server/package/applications/repositories"
+	repos "github.com/genki-sano/money-maneger-server/package/applications/repositories"
 	"github.com/genki-sano/money-maneger-server/package/domains"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -11,15 +11,16 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
-// PaymentRepository 支払情報のリポジトリ
-type PaymentRepository struct{}
+// PaymentGateway 支払情報リポジトリ（構造体）
+type PaymentGateway struct{}
 
-func NewPaymentRepository() app.PaymentRepository {
-	return &PaymentRepository{}
+// NewPaymentRepository リポジトリを生成
+func NewPaymentRepository() repos.PaymentRepository {
+	return &PaymentGateway{}
 }
 
 // FindAll 全件取得
-func (repo *PaymentRepository) FindAll() (payments domains.Payments, err error) {
+func (repo *PaymentGateway) FindAll() (payments domains.Payments, err error) {
 	email := os.Getenv("GOOGLE_SERVICE_ACCOUNT_EMAIL")
 	key := os.Getenv("GOOGLE_SERVICE_ACCOUNT_PLIVATE_KEY")
 
