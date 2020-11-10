@@ -1,4 +1,4 @@
-package controllers
+package handlers
 
 // Context コンテキスト
 type Context interface {

@@ -3,6 +3,7 @@ package repositories
 import (
 	"os"
 
+	app "github.com/genki-sano/money-maneger-server/package/applications/repositories"
 	"github.com/genki-sano/money-maneger-server/package/domains"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -12,6 +13,10 @@ import (
 
 // PaymentRepository 支払情報のリポジトリ
 type PaymentRepository struct{}
+
+func NewPaymentRepository() app.PaymentRepository {
+	return &PaymentRepository{}
+}
 
 // FindAll 全件取得
 func (repo *PaymentRepository) FindAll() (payments domains.Payments, err error) {

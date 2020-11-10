@@ -1,4 +1,4 @@
-package controllers
+package handlers
 
 // Error エラー発生時のレスポンス
 type Error struct {

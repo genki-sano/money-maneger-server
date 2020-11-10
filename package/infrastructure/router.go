@@ -4,10 +4,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/genki-sano/money-maneger-server/package/interfaces/controllers"
+	"github.com/genki-sano/money-maneger-server/package/infrastructure/di"
 	"github.com/gin-gonic/gin"
 )
 
+// Router ルーター
 var Router *gin.Engine
 
 func init() {
@@ -17,10 +18,9 @@ func init() {
 		c.JSON(http.StatusOK, gin.H{"healthCheck": "ok"})
 	})
 
-	paymentController := controllers.NewPaymentController()
 	api := e.Group("/api")
 	{
-		api.GET("/payments", func(c *gin.Context) { paymentController.Index(c) })
+		api.GET("/payments", func(c *gin.Context) { di.InitializePayment().Index(c) })
 	}
 
 	e.NoRoute(func(c *gin.Context) {
