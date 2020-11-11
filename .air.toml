@@ -3,19 +3,19 @@
 # Working directory
 # . or absolute path, please note that the directories following must be under root.
 root = "."
-tmp_dir = "build"
+tmp_dir = "dist"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -o ./build/main ./package"
+cmd = "go build -o ./dist/main ./package"
 # Binary file yields from `cmd`.
-bin = "build/main"
+bin = "dist/main"
 # Customize binary.
-full_bin = "./build/main web"
+full_bin = "./dist/main web"
 # Watch these filename extensions.
 include_ext = ["go"]
 # Ignore these filename extensions or directories.
-exclude_dir = ["build"]
+exclude_dir = ["dist"]
 # Watch these directories if you specified.
 include_dir = []
 # Exclude files.
