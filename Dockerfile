@@ -3,10 +3,10 @@ FROM golang:alpine as builder
 RUN apk update \
   && apk add --no-cache git curl make gcc g++
 
-RUN go get github.com/google/wire/cmd/wire \
-  && go get -u github.com/cosmtrek/air \
-  && chmod +x /go/bin/wire \
-  && chmod +x /go/bin/air
+RUN go get -u github.com/cosmtrek/air \
+  && go get -u github.com/google/wire/cmd/wire \
+  && chmod +x /go/bin/air \
+  && chmod +x /go/bin/wire
 
 WORKDIR /app
 COPY go.mod .
