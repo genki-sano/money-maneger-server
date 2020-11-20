@@ -12,7 +12,7 @@ func main() {
 		port = "8080"
 	}
 
-	if err := infrastructure.Router.Run(":" + port); err != nil {
+	if err := infrastructure.Route().Run(":" + port); err != nil {
 		panic(err)
 	}
 }

@@ -25,7 +25,7 @@ func NewPaymentUsecase(
 }
 
 // Payments 支払情報を全件取得
-func (interactor *PaymentInteractor) Payments() (payments domains.Payments, err error) {
-	payments, err = interactor.paymentRepos.FindAll()
+func (i *PaymentInteractor) Payments() (payments domains.Payments, err error) {
+	payments, err = i.paymentRepos.FindAll()
 	return
 }

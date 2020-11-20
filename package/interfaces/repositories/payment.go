@@ -11,30 +11,19 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
-// PaymentGateway 支払情報リポジトリ（構造体）
-type PaymentGateway struct{}
+// PaymentDataAccess 支払情報リポジトリ（構造体）
+type PaymentDataAccess struct{}
 
 // NewPaymentRepository リポジトリを生成
 func NewPaymentRepository() repos.PaymentRepository {
-	return &PaymentGateway{}
+	return &PaymentDataAccess{}
 }
 
 // FindAll 全件取得
-func (repo *PaymentGateway) FindAll() (payments domains.Payments, err error) {
+func (d *PaymentDataAccess) FindAll() (payments domains.Payments, err error) {
 	email := os.Getenv("GOOGLE_SERVICE_ACCOUNT_EMAIL")
 	key := os.Getenv("GOOGLE_SERVICE_ACCOUNT_PLIVATE_KEY")
-
-	conf := &jwt.Config{
-		Email:      email,
-		PrivateKey: []byte(key),
-		TokenURL:   google.JWTTokenURL,
-		Scopes: []string{
-			"https://www.googleapis.com/auth/spreadsheets.readonly",
-		},
-	}
-
-	client := conf.Client(oauth2.NoContext)
-	srv, err := sheets.New(client)
+	srv, err := newSheetService(email, key)
 	if err != nil {
 		return nil, err
 	}
@@ -46,12 +35,31 @@ func (repo *PaymentGateway) FindAll() (payments domains.Payments, err error) {
 		return nil, err
 	}
 
+	return generatePayment(resp)
+}
+
+func newSheetService(email string, key string) (*sheets.Service, error) {
+	scopes := []string{
+		"https://www.googleapis.com/auth/spreadsheets.readonly",
+	}
+	conf := &jwt.Config{
+		Email:      email,
+		PrivateKey: []byte(key),
+		TokenURL:   google.JWTTokenURL,
+		Scopes:     scopes,
+	}
+	client := conf.Client(oauth2.NoContext)
+
+	return sheets.New(client)
+}
+
+func generatePayment(r *sheets.ValueRange) (payments domains.Payments, err error) {
 	payments = make(domains.Payments, 0)
-	if len(resp.Values) == 0 {
+	if len(r.Values) == 0 {
 		return payments, nil
 	}
 
-	for _, items := range resp.Values {
+	for _, items := range r.Values {
 		payments = append(payments, domains.Payment{
 			ID:       items[0].(string),
 			Name:     items[1].(string),

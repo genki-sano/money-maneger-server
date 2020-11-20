@@ -9,7 +9,6 @@ import (
 	"github.com/google/wire"
 )
 
-// InitializePayment DI
 func InitializePayment() *controllers.PaymentController {
 	wire.Build(
 		controllers.NewPaymentController,

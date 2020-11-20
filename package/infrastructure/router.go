@@ -8,10 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Router ルーター
-var Router *gin.Engine
-
-func init() {
+// Route ルーティングの設定
+func Route() *gin.Engine {
 	e := createEngine()
 
 	e.GET("/health", func(c *gin.Context) {
@@ -27,17 +25,20 @@ func init() {
 		c.JSON(http.StatusNotFound, gin.H{"errors": []string{"指定したURLが存在しません。"}})
 	})
 
-	Router = e
+	return e
 }
 
 func createEngine() *gin.Engine {
 	gin.DisableConsoleColor()
+	setMode()
 
+	return gin.Default()
+}
+
+func setMode() {
 	mode := os.Getenv("APP_MODE")
 	if mode == "" {
 		mode = gin.ReleaseMode
 	}
 	gin.SetMode(mode)
-
-	return gin.Default()
 }
