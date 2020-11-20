@@ -2,7 +2,7 @@ package handlers
 
 // Error エラー発生時のレスポンス
 type Error struct {
-	Message string
+	Message string `json:"message"`
 }
 
 // NewError エラーレスポンスを作成
