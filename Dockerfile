@@ -19,11 +19,11 @@ WORKDIR /app/package/infrastructure/di
 RUN wire
 
 WORKDIR /app
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ./main ./package
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o /main ./package
 
 FROM alpine:3.9
 
-COPY --from=builder ./main .
+COPY --from=builder /main .
 
 ENV PORT=${PORT}
 ENTRYPOINT ["/main web"]
