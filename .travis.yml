@@ -1,9 +1,12 @@
 language: go
 
 go:
-  - master
+  - 1.14.x
+  - 1.15.x
+  - tip
 
-install: true
+env:
+  - GO111MODULE=on
 
 script:
-  - env GO111MODULE=on go test -v ./tests/...
+  - go test -v ./tests/...
