@@ -12,3 +12,15 @@ type Payment struct {
 	Category string `json:"category"`
 	Memo     string `json:"memo"`
 }
+
+// NewPayment 支払情報の作成
+func NewPayment(id string, name string, date string, price string, category string, memo string) *Payment {
+	return &Payment{
+		ID:       id,
+		Name:     name,
+		Date:     date,
+		Price:    price,
+		Category: category,
+		Memo:     memo,
+	}
+}

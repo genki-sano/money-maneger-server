@@ -1,21 +1,25 @@
-package datastores
+package datastore
 
 import (
 	"os"
 
 	"github.com/genki-sano/money-maneger-server/package/domains"
-	store "github.com/genki-sano/money-maneger-server/package/interfaces/repositories/datastores"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"golang.org/x/oauth2/jwt"
 	"google.golang.org/api/sheets/v4"
 )
 
+// PaymentDatastore 支払情報リポジトリ（構造体）
+type PaymentDatastore interface {
+	GetAll() (domains.Payments, error)
+}
+
 // PaymentDatabase 支払情報リポジトリ（構造体）
 type PaymentDatabase struct{}
 
 // NewPaymentDatastore リポジトリを生成
-func NewPaymentDatastore() store.PaymentDatastore {
+func NewPaymentDatastore() PaymentDatastore {
 	return &PaymentDatabase{}
 }
 
