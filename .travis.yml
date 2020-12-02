@@ -8,5 +8,17 @@ go:
 env:
   - GO111MODULE=on
 
+before_install:
+  - go get github.com/mattn/goveralls
+  - go get github.com/google/wire/cmd/wire
+
+before_script:
+  - chmod +x $GOPATH/bin/wire
+  - cd $GOPATH/src/github.com/genki-sano/money-maneger-server/package/infrastructure/di && wire
+  - cd $GOPATH/src/github.com/genki-sano/money-maneger-server
+
 script:
   - go test -v ./tests/...
+
+after_success:
+  - $GOPATH/bin/goveralls -service=travis-ci
