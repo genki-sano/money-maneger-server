@@ -3,6 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/genki-sano/money-maneger-server/package/applications/requests"
+
 	"github.com/genki-sano/money-maneger-server/package/applications/usecases"
 	"github.com/genki-sano/money-maneger-server/package/interfaces/handlers"
 )
@@ -20,6 +22,23 @@ func NewPaymentController(u usecases.PaymentUseCase) *PaymentController {
 // Index 支払情報を全件取得
 func (c *PaymentController) Index(ctx handlers.Context) {
 	resp, err := c.u.Payments()
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, handlers.NewError(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, resp)
+}
+
+// Show 支払情報を全件取得
+func (c *PaymentController) Show(ctx handlers.Context) {
+	req, err := requests.NewPaymentInputData(ctx.Param("date"))
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, handlers.NewError(err))
+		return
+	}
+
+	resp, err := c.u.PaymentsByDate(req)
 	if err != nil {
 		ctx.JSON(http.StatusForbidden, handlers.NewError(err))
 		return

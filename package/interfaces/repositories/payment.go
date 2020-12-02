@@ -43,5 +43,6 @@ func (d *PaymentDataAccess) GetByDate(t time.Time) (payments domains.Payments, e
 		}
 		payments = append(payments, items)
 	}
+
 	return payments, nil
 }

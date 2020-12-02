@@ -19,6 +19,7 @@ func Route() *gin.Engine {
 	api := e.Group("/api")
 	{
 		api.GET("/payments", func(c *gin.Context) { di.InitializePayment().Index(c) })
+		api.GET("/payments/:date", func(c *gin.Context) { di.InitializePayment().Show(c) })
 	}
 
 	e.NoRoute(func(c *gin.Context) {
