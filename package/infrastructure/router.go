@@ -1,10 +1,12 @@
 package infrastructure
 
 import (
+	"errors"
 	"net/http"
 	"os"
 
 	"github.com/genki-sano/money-maneger-server/package/infrastructure/di"
+	"github.com/genki-sano/money-maneger-server/package/interfaces/handlers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,7 +25,8 @@ func Route() *gin.Engine {
 	}
 
 	e.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{"errors": []string{"指定したURLが存在しません。"}})
+		err := errors.New("no route to host")
+		c.JSON(http.StatusNotFound, handlers.NewError(err))
 	})
 
 	return e
