@@ -6,6 +6,7 @@ import (
 	"github.com/genki-sano/money-maneger-server/package/applications/usecases"
 	"github.com/genki-sano/money-maneger-server/package/infrastructure/datastore"
 	"github.com/genki-sano/money-maneger-server/package/interfaces/controllers"
+	"github.com/genki-sano/money-maneger-server/package/interfaces/presenters"
 	"github.com/genki-sano/money-maneger-server/package/interfaces/repositories"
 	"github.com/google/wire"
 )
@@ -13,6 +14,7 @@ import (
 func InitializePayment() *controllers.PaymentController {
 	wire.Build(
 		controllers.NewPaymentController,
+		presenters.NewPaymentPresenter,
 		usecases.NewPaymentUsecase,
 		repositories.NewPaymentRepository,
 		datastore.NewPaymentDatastore,

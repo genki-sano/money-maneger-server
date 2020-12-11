@@ -8,23 +8,18 @@ import (
 	"github.com/genki-sano/money-maneger-server/package/infrastructure/datastore"
 )
 
-// PaymentDataAccess 支払情報リポジトリ（構造体）
+// PaymentDataAccess は支払情報関連のリポジトリの構造体です
 type PaymentDataAccess struct {
 	store datastore.PaymentDatastore
 }
 
-// NewPaymentRepository リポジトリを生成
+// NewPaymentRepository はPaymentDataAccessを返します
 func NewPaymentRepository(store datastore.PaymentDatastore) repos.PaymentRepository {
 	return &PaymentDataAccess{store: store}
 }
 
-// FindAll 全件取得
-func (d *PaymentDataAccess) FindAll() (payments domains.Payments, err error) {
-	return d.store.GetAll()
-}
-
-// GetByDate 特定の月のみ
-func (d *PaymentDataAccess) GetByDate(t time.Time) (payments domains.Payments, err error) {
+// GetByDate は特定月の支払情報を取得します
+func (d *PaymentDataAccess) GetByDate(t time.Time) (payments []domains.Payment, err error) {
 	all, err := d.store.GetAll()
 	if err != nil {
 		return nil, err
@@ -36,7 +31,7 @@ func (d *PaymentDataAccess) GetByDate(t time.Time) (payments domains.Payments, e
 	first := time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
 	last := first.AddDate(0, 1, -1)
 
-	payments = make(domains.Payments, 0)
+	payments = make([]domains.Payment, 0)
 	for _, items := range all {
 		if date, _ := time.ParseInLocation("2006/01/02", items.Date, time.Local); date.Before(first) || date.After(last) {
 			continue

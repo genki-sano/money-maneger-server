@@ -5,7 +5,7 @@ type Error struct {
 	Message string `json:"message"`
 }
 
-// NewError エラーレスポンスを作成
+// NewError はErrorを返します
 func NewError(err error) *Error {
 	return &Error{
 		Message: err.Error(),

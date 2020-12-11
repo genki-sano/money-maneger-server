@@ -14,20 +14,22 @@ import (
 func Route() *gin.Engine {
 	e := createEngine()
 
+	e.NoRoute(func(c *gin.Context) {
+		err := errors.New("no route to host")
+		c.JSON(http.StatusNotFound, handlers.NewError(err))
+	})
+
 	e.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"healthCheck": "ok"})
 	})
 
 	api := e.Group("/api")
 	{
-		api.GET("/payments", func(c *gin.Context) { di.InitializePayment().Index(c) })
-		api.GET("/payments/:date", func(c *gin.Context) { di.InitializePayment().Show(c) })
+		payments := api.Group("/payments")
+		{
+			payments.GET("/:date", func(c *gin.Context) { di.InitializePayment().List(c) })
+		}
 	}
-
-	e.NoRoute(func(c *gin.Context) {
-		err := errors.New("no route to host")
-		c.JSON(http.StatusNotFound, handlers.NewError(err))
-	})
 
 	return e
 }

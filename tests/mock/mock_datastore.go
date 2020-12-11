@@ -35,10 +35,10 @@ func (m *MockPaymentDatastore) EXPECT() *MockPaymentDatastoreMockRecorder {
 }
 
 // GetAll mocks base method
-func (m *MockPaymentDatastore) GetAll() (domains.Payments, error) {
+func (m *MockPaymentDatastore) GetAll() ([]domains.Payment, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll")
-	ret0, _ := ret[0].(domains.Payments)
+	ret0, _ := ret[0].([]domains.Payment)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -4,45 +4,41 @@ import (
 	"net/http"
 
 	"github.com/genki-sano/money-maneger-server/package/applications/requests"
-
 	"github.com/genki-sano/money-maneger-server/package/applications/usecases"
 	"github.com/genki-sano/money-maneger-server/package/interfaces/handlers"
+	"github.com/genki-sano/money-maneger-server/package/interfaces/presenters"
 )
 
-// PaymentController 支払情報のコントローラー（構造体）
+// PaymentController は支払情報関連のコントローラーの構造体です
 type PaymentController struct {
 	u usecases.PaymentUseCase
+	p presenters.PaymentPresenter
 }
 
-// NewPaymentController コントローラーを生成
-func NewPaymentController(u usecases.PaymentUseCase) *PaymentController {
-	return &PaymentController{u: u}
-}
-
-// Index 支払情報を全件取得
-func (c *PaymentController) Index(ctx handlers.Context) {
-	resp, err := c.u.Payments()
-	if err != nil {
-		ctx.JSON(http.StatusForbidden, handlers.NewError(err))
-		return
+// NewPaymentController はPaymentControllerを返します
+func NewPaymentController(
+	u usecases.PaymentUseCase,
+	p presenters.PaymentPresenter,
+) *PaymentController {
+	return &PaymentController{
+		u: u,
+		p: p,
 	}
-
-	ctx.JSON(http.StatusOK, resp)
 }
 
-// Show 支払情報を全件取得
-func (c *PaymentController) Show(ctx handlers.Context) {
-	req, err := requests.NewPaymentInputData(ctx.Param("date"))
+// List は支払情報一覧を取得します
+func (c *PaymentController) List(ctx handlers.Context) {
+	req, err := requests.NewPaymentListInputData(ctx.Param("date"))
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, handlers.NewError(err))
 		return
 	}
 
-	resp, err := c.u.PaymentsByDate(req)
+	resp, err := c.u.List(req)
 	if err != nil {
 		ctx.JSON(http.StatusForbidden, handlers.NewError(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, resp)
+	ctx.JSON(http.StatusOK, c.p.List(resp))
 }

@@ -6,8 +6,7 @@ import (
 	"github.com/genki-sano/money-maneger-server/package/domains"
 )
 
-// PaymentRepository 支払情報のリポジトリ
+// PaymentRepository は支払情報関連のリポジトリです
 type PaymentRepository interface {
-	FindAll() (domains.Payments, error)
-	GetByDate(time.Time) (domains.Payments, error)
+	GetByDate(time.Time) ([]domains.Payment, error)
 }

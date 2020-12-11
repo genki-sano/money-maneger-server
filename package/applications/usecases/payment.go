@@ -8,18 +8,17 @@ import (
 	"github.com/genki-sano/money-maneger-server/package/domains"
 )
 
-// PaymentUseCase 支払情報ユースケース
+// PaymentUseCase は支払情報に関するユースケースです
 type PaymentUseCase interface {
-	Payments() (domains.Payments, error)
-	PaymentsByDate(*requests.PaymentInputData) (domains.Payments, error)
+	List(*requests.PaymentListInputData) ([]domains.Payment, error)
 }
 
-// PaymentInteractor 支払情報ユースケース（構造体）
+// PaymentInteractor は支払情報に関するユースケースの構造体です
 type PaymentInteractor struct {
 	paymentRepos repositories.PaymentRepository
 }
 
-// NewPaymentUsecase ユースケースを生成
+// NewPaymentUsecase はPaymentInteractorを返します
 func NewPaymentUsecase(
 	paymentRepos repositories.PaymentRepository,
 ) PaymentUseCase {
@@ -28,14 +27,8 @@ func NewPaymentUsecase(
 	}
 }
 
-// Payments 支払情報を全件取得
-func (i *PaymentInteractor) Payments() (payments domains.Payments, err error) {
-	payments, err = i.paymentRepos.FindAll()
-	return
-}
-
-// PaymentsByDate 支払情報を全件取得
-func (i *PaymentInteractor) PaymentsByDate(req *requests.PaymentInputData) (payments domains.Payments, err error) {
+// List は支払情報一覧を取得します
+func (i *PaymentInteractor) List(req *requests.PaymentListInputData) (payments []domains.Payment, err error) {
 	payments, err = i.paymentRepos.GetByDate(req.Date)
 
 	sort.SliceStable(payments, func(i, j int) bool {

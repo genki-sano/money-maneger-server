@@ -10,21 +10,21 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
-// PaymentDatastore 支払情報リポジトリ（構造体）
+// PaymentDatastore は支払情報関連のデータストアです
 type PaymentDatastore interface {
-	GetAll() (domains.Payments, error)
+	GetAll() ([]domains.Payment, error)
 }
 
-// PaymentDatabase 支払情報リポジトリ（構造体）
+// PaymentDatabase は支払情報関連のデータストアの構造体です
 type PaymentDatabase struct{}
 
-// NewPaymentDatastore リポジトリを生成
+// NewPaymentDatastore はPaymentDatabaseを返します
 func NewPaymentDatastore() PaymentDatastore {
 	return &PaymentDatabase{}
 }
 
-// GetAll は全件取得します
-func (d *PaymentDatabase) GetAll() (payments domains.Payments, err error) {
+// GetAll は支払情報を全件取得します
+func (d *PaymentDatabase) GetAll() (payments []domains.Payment, err error) {
 	email := os.Getenv("GOOGLE_SERVICE_ACCOUNT_EMAIL")
 	key := os.Getenv("GOOGLE_SERVICE_ACCOUNT_PLIVATE_KEY")
 	srv, err := newSheetService(email, key)
@@ -57,8 +57,8 @@ func newSheetService(email string, key string) (*sheets.Service, error) {
 	return sheets.New(client)
 }
 
-func generatePayment(r *sheets.ValueRange) (payments domains.Payments, err error) {
-	payments = make(domains.Payments, 0)
+func generatePayment(r *sheets.ValueRange) (payments []domains.Payment, err error) {
+	payments = make([]domains.Payment, 0)
 	if len(r.Values) == 0 {
 		return payments, nil
 	}

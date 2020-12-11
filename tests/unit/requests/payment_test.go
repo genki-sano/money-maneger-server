@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPaymentInputData_NewPaymentInputData(t *testing.T) {
+func TestPaymentInputData_NewPaymentInputData_Success(t *testing.T) {
 	testCases := []struct {
 		name     string
 		date     string
