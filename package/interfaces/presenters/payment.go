@@ -2,7 +2,6 @@ package presenters
 
 import (
 	"os"
-	"strconv"
 
 	"github.com/genki-sano/money-maneger-server/package/domains"
 )
@@ -14,13 +13,13 @@ type totalResponse struct {
 
 // PaymentListResponse は支払情報一覧のレスポンスの構造体です
 type PaymentListResponse struct {
-	Items []domains.Payment `json:"items"`
-	Total totalResponse     `json:"total"`
+	Items []*domains.Payment `json:"items"`
+	Total totalResponse      `json:"total"`
 }
 
 // PaymentPresenter は支払情報関連のプレゼンターです
 type PaymentPresenter interface {
-	List([]domains.Payment) PaymentListResponse
+	List([]*domains.Payment) PaymentListResponse
 }
 
 // PaymentFactory は支払情報関連のプレゼンターの構造体です
@@ -33,24 +32,23 @@ func NewPaymentPresenter() PaymentPresenter {
 }
 
 // List は支払情報一覧を返します
-func (p *PaymentFactory) List(payments []domains.Payment) PaymentListResponse {
-	wp := 0
-	mp := 0
+func (p *PaymentFactory) List(payments []*domains.Payment) PaymentListResponse {
+	var wp uint32
+	var mp uint32
 	for _, payment := range payments {
-		num, _ := strconv.Atoi(payment.Price)
 		if payment.Name == os.Getenv("WOMEN_NAME") {
-			wp = wp + num
+			wp = wp + payment.Price
 		}
 		if payment.Name == os.Getenv("MEN_NAME") {
-			mp = mp + num
+			mp = mp + payment.Price
 		}
 	}
 
 	return PaymentListResponse{
 		Items: payments,
 		Total: totalResponse{
-			Women: uint32(wp),
-			Men:   uint32(mp),
+			Women: wp,
+			Men:   mp,
 		},
 	}
 }

@@ -12,7 +12,7 @@ import (
 
 // PaymentDatastore は支払情報関連のデータストアです
 type PaymentDatastore interface {
-	GetAll() ([]domains.Payment, error)
+	GetAll() ([]*domains.Payment, error)
 }
 
 // PaymentDatabase は支払情報関連のデータストアの構造体です
@@ -24,7 +24,7 @@ func NewPaymentDatastore() PaymentDatastore {
 }
 
 // GetAll は支払情報を全件取得します
-func (d *PaymentDatabase) GetAll() (payments []domains.Payment, err error) {
+func (d *PaymentDatabase) GetAll() (payments []*domains.Payment, err error) {
 	email := os.Getenv("GOOGLE_SERVICE_ACCOUNT_EMAIL")
 	key := os.Getenv("GOOGLE_SERVICE_ACCOUNT_PLIVATE_KEY")
 	srv, err := newSheetService(email, key)
@@ -57,21 +57,22 @@ func newSheetService(email string, key string) (*sheets.Service, error) {
 	return sheets.New(client)
 }
 
-func generatePayment(r *sheets.ValueRange) (payments []domains.Payment, err error) {
-	payments = make([]domains.Payment, 0)
+func generatePayment(r *sheets.ValueRange) (payments []*domains.Payment, err error) {
+	payments = make([]*domains.Payment, 0)
 	if len(r.Values) == 0 {
 		return payments, nil
 	}
 
 	for _, items := range r.Values {
-		payments = append(payments, domains.Payment{
-			ID:       items[0].(string),
-			Name:     items[1].(string),
-			Date:     items[2].(string),
-			Price:    items[3].(string),
-			Category: items[4].(string),
-			Memo:     items[5].(string),
-		})
+		payment := domains.NewPayment(
+			items[0].(string),
+			items[1].(string),
+			items[2].(string),
+			items[3].(string),
+			items[4].(string),
+			items[5].(string),
+		)
+		payments = append(payments, payment)
 	}
 	return payments, nil
 }

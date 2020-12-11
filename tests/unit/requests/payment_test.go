@@ -8,30 +8,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPaymentInputData_NewPaymentInputData_Success(t *testing.T) {
+func TestPaymentListInputData_NewPaymentInputData_Success(t *testing.T) {
 	testCases := []struct {
 		name     string
 		date     string
-		expected *requests.PaymentInputData
+		expected *requests.PaymentListInputData
 	}{
 		{
 			name: "正しい形式の場合",
 			date: "20201201",
-			expected: &requests.PaymentInputData{
+			expected: &requests.PaymentListInputData{
 				Date: time.Date(2020, 12, 1, 0, 0, 0, 0, time.Local),
 			},
 		},
 		{
 			name: "うるう年の場合",
 			date: "20200229",
-			expected: &requests.PaymentInputData{
+			expected: &requests.PaymentListInputData{
 				Date: time.Date(2020, 2, 29, 0, 0, 0, 0, time.Local),
 			},
 		},
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			actual, err := requests.NewPaymentInputData(testCase.date)
+			actual, err := requests.NewPaymentListInputData(testCase.date)
 
 			assert.NotNil(t, actual)
 			assert.Exactly(t, actual.Date, testCase.expected.Date)
@@ -41,7 +41,7 @@ func TestPaymentInputData_NewPaymentInputData_Success(t *testing.T) {
 	}
 }
 
-func TestPaymentInputData_NewPaymentInputData_Failed(t *testing.T) {
+func TestPaymentListInputData_NewPaymentInputData_Failed(t *testing.T) {
 	testCases := []struct {
 		name string
 		date string
@@ -75,7 +75,7 @@ func TestPaymentInputData_NewPaymentInputData_Failed(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			actual, err := requests.NewPaymentInputData(testCase.date)
+			actual, err := requests.NewPaymentListInputData(testCase.date)
 
 			assert.Nil(t, actual)
 

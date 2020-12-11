@@ -1,6 +1,7 @@
 package domains_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/genki-sano/money-maneger-server/package/domains"
@@ -18,10 +19,11 @@ func TestPayment_NewPayment(t *testing.T) {
 
 		actual := domains.NewPayment(id, name, date, price, category, memo)
 
+		expected, _ := strconv.Atoi(price)
 		assert.Exactly(t, actual.ID, id)
 		assert.Exactly(t, actual.Name, name)
 		assert.Exactly(t, actual.Date, date)
-		assert.Exactly(t, actual.Price, price)
+		assert.Exactly(t, actual.Price, uint32(expected))
 		assert.Exactly(t, actual.Category, category)
 		assert.Exactly(t, actual.Memo, memo)
 	})

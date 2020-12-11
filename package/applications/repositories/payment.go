@@ -8,5 +8,5 @@ import (
 
 // PaymentRepository は支払情報関連のリポジトリです
 type PaymentRepository interface {
-	GetByDate(time.Time) ([]domains.Payment, error)
+	GetByDate(time.Time) ([]*domains.Payment, error)
 }

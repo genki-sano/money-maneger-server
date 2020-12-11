@@ -10,7 +10,7 @@ import (
 
 // PaymentUseCase は支払情報に関するユースケースです
 type PaymentUseCase interface {
-	List(*requests.PaymentListInputData) ([]domains.Payment, error)
+	List(*requests.PaymentListInputData) ([]*domains.Payment, error)
 }
 
 // PaymentInteractor は支払情報に関するユースケースの構造体です
@@ -28,7 +28,7 @@ func NewPaymentUsecase(
 }
 
 // List は支払情報一覧を取得します
-func (i *PaymentInteractor) List(req *requests.PaymentListInputData) (payments []domains.Payment, err error) {
+func (i *PaymentInteractor) List(req *requests.PaymentListInputData) (payments []*domains.Payment, err error) {
 	payments, err = i.paymentRepos.GetByDate(req.Date)
 
 	sort.SliceStable(payments, func(i, j int) bool {

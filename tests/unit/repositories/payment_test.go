@@ -15,35 +15,35 @@ import (
 func TestPaymentDataAccess_GetByDate(t *testing.T) {
 	testCases := []struct {
 		name     string
-		data     []domains.Payment
-		expected []domains.Payment
+		data     []*domains.Payment
+		expected []*domains.Payment
 	}{
 		{
 			name: "取得する値がある場合、指定した月の値のみを返すべき",
-			data: []domains.Payment{
-				domains.Payment{
+			data: []*domains.Payment{
+				&domains.Payment{
 					ID:       "hoge",
 					Name:     "太郎",
 					Date:     "2020/11/01",
-					Price:    "1234",
+					Price:    1234,
 					Category: "食費",
 					Memo:     "スーパー",
 				},
-				domains.Payment{
+				&domains.Payment{
 					ID:       "fuga",
 					Name:     "花子",
 					Date:     "2020/10/01",
-					Price:    "2345",
+					Price:    2345,
 					Category: "日用品",
 					Memo:     "ドラッグストア",
 				},
 			},
-			expected: []domains.Payment{
-				domains.Payment{
+			expected: []*domains.Payment{
+				&domains.Payment{
 					ID:       "hoge",
 					Name:     "太郎",
 					Date:     "2020/11/01",
-					Price:    "1234",
+					Price:    1234,
 					Category: "食費",
 					Memo:     "スーパー",
 				},
@@ -51,17 +51,17 @@ func TestPaymentDataAccess_GetByDate(t *testing.T) {
 		},
 		{
 			name: "取得する値がない場合、空の値を返すべき",
-			data: []domains.Payment{
-				domains.Payment{
+			data: []*domains.Payment{
+				&domains.Payment{
 					ID:       "fuga",
 					Name:     "花子",
 					Date:     "2020/10/01",
-					Price:    "2345",
+					Price:    2345,
 					Category: "日用品",
 					Memo:     "ドラッグストア",
 				},
 			},
-			expected: make([]domains.Payment, 0),
+			expected: make([]*domains.Payment, 0),
 		},
 	}
 
