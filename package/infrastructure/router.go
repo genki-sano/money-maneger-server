@@ -7,6 +7,7 @@ import (
 
 	"github.com/genki-sano/money-maneger-server/package/infrastructure/di"
 	"github.com/genki-sano/money-maneger-server/package/interfaces/handlers"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,7 +39,18 @@ func createEngine() *gin.Engine {
 	gin.DisableConsoleColor()
 	setMode()
 
-	return gin.Default()
+	r := gin.Default()
+
+	// COR設定の追加
+	config := cors.DefaultConfig()
+	config.AllowCredentials = true
+	config.AllowOrigins = []string{
+		"http://localhost:3000", // ローカル開発用
+		"https://money-maneger-client.herokuapp.com",
+	}
+	r.Use(cors.New(config))
+
+	return r
 }
 
 func setMode() {
