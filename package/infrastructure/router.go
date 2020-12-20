@@ -47,6 +47,7 @@ func createEngine() *gin.Engine {
 	config.AllowOrigins = []string{
 		"http://localhost:3000", // ローカル開発用
 		"https://money-maneger-client.herokuapp.com",
+		"https://money-maneger.netlify.app",
 	}
 	r.Use(cors.New(config))
 
